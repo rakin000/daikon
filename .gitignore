@@ -529,3 +529,4 @@ scripts/dockerdir/
 # PMD
 java/pmd-output.txt
 java/pmd.cache
+build/*

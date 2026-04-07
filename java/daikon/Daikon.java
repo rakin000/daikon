@@ -29,6 +29,7 @@ import daikon.inv.binary.twoScalar.FloatEqual;
 import daikon.inv.binary.twoScalar.FloatGreaterEqual;
 import daikon.inv.binary.twoScalar.FloatGreaterThan;
 import daikon.inv.binary.twoScalar.FloatLessEqual;
+import daikon.inv.binary.twoScalar.CorrelationInvariant;
 import daikon.inv.binary.twoScalar.FloatLessThan;
 import daikon.inv.binary.twoScalar.FloatNonEqual;
 import daikon.inv.binary.twoScalar.IntEqual;
@@ -1637,6 +1638,9 @@ public final class Daikon {
       proto_invs.add(LinearBinary.get_proto());
       proto_invs.add(LinearBinaryFloat.get_proto());
 
+      // Statistical correlation (CorrelationInvariant.java)
+      proto_invs.add(CorrelationInvariant.get_proto());
+
       // Numeric invariants (from Numeric.java.jpp)
       proto_invs.addAll(NumericInt.get_proto_all());
       proto_invs.addAll(NumericFloat.get_proto_all());
@@ -2182,7 +2186,7 @@ public final class Daikon {
   /**
    * The number of columns of progress information to display. In many Unix shells, this can be set
    * to an appropriate value by {@code --config_option
-   * daikon.Daikon.progress_display_width=$COLUMNS}.
+   * daikon.Daikon.progress_display_width=$COLUMNS}..
    */
   public static int dkconfig_progress_display_width = 80;
 
