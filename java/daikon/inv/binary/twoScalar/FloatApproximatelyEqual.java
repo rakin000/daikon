@@ -158,13 +158,33 @@ public final class FloatApproximatelyEqual extends TwoFloat implements EqualityC
     return format_unimplemented(format);
   }
 
-  private 
   @Override
   public InvariantStatus check_modified(double v1, double v2, int count) {
-    if (!Global.fuzzy.eq(v1, v2)) {
+    // Compute statistical correlation between the two values
+    double correlation = computeCorrelation(v1, v2);
+    
+
+    if (correlation < 0.9) { // Threshold for approximate equality, can be adjusted
       return InvariantStatus.FALSIFIED;
     }
     return InvariantStatus.NO_CHANGE;
+  }
+
+  /**
+   * Computes a correlation metric between two scalar values.
+   * For approximate equality checking, a high correlation indicates similar values.
+   */
+  private double computeCorrelation(double v1, double v2) {
+    if (v1 == v2) {
+      return 1.0; // Perfect correlation
+    }
+    double diff = Math.abs(v1 - v2);
+    double avg = (Math.abs(v1) + Math.abs(v2)) / 2.0;
+    if (avg == 0) {
+      return 0.0;
+    }
+    // Return correlation as 1 - normalized difference
+    return Math.max(0.0, 1.0 - (diff / avg));
   }
 
   @Override
