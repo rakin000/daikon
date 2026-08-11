@@ -39,6 +39,16 @@ public final class FloatApproximatelyEqual extends TwoFloat implements EqualityC
 
   public static final Logger debug = Logger.getLogger("daikon.inv.binary.twoScalar.FloatApproximatelyEqual");
 
+  /** Relative tolerance: |v1-v2| / max(|v1|,|v2|,1.0) must stay below this. */
+  static final double RELATIVE_TOLERANCE = 0.05;
+  /** Minimum samples before we can falsify. */
+  static final int MIN_SAMPLES = 50;
+  /** Maximum fraction of violating samples before falsifying. */
+  static final double MAX_VIOLATION_RATE = 0.05;
+
+  private int num_samples_seen = 0;
+  private int num_violations_seen = 0;
+
   FloatApproximatelyEqual(PptSlice ppt) {
     super(ppt);
   }
@@ -71,7 +81,7 @@ public final class FloatApproximatelyEqual extends TwoFloat implements EqualityC
 
   @Override
   protected FloatApproximatelyEqual instantiate_dyn(@Prototype FloatApproximatelyEqual this, PptSlice slice) {
-    return new FloatEqual(slice);
+    return new FloatApproximatelyEqual(slice);
   }
 
   @Pure
@@ -158,33 +168,18 @@ public final class FloatApproximatelyEqual extends TwoFloat implements EqualityC
     return format_unimplemented(format);
   }
 
+  /**
+   * Returns whether a single pair of values violates the approximate-equality tolerance.
+   * Uses a scale-robust relative difference: |v1-v2| / max(|v1|, |v2|, 1.0).
+   */
   @Override
   public InvariantStatus check_modified(double v1, double v2, int count) {
-    // Compute statistical correlation between the two values
-    double correlation = computeCorrelation(v1, v2);
-    
-
-    if (correlation < 0.9) { // Threshold for approximate equality, can be adjusted
+    double scale = Math.max(Math.max(Math.abs(v1), Math.abs(v2)), 1.0);
+    double relDiff = Math.abs(v1 - v2) / scale;
+    if (relDiff > RELATIVE_TOLERANCE) {
       return InvariantStatus.FALSIFIED;
     }
     return InvariantStatus.NO_CHANGE;
-  }
-
-  /**
-   * Computes a correlation metric between two scalar values.
-   * For approximate equality checking, a high correlation indicates similar values.
-   */
-  private double computeCorrelation(double v1, double v2) {
-    if (v1 == v2) {
-      return 1.0; // Perfect correlation
-    }
-    double diff = Math.abs(v1 - v2);
-    double avg = (Math.abs(v1) + Math.abs(v2)) / 2.0;
-    if (avg == 0) {
-      return 0.0;
-    }
-    // Return correlation as 1 - normalized difference
-    return Math.max(0.0, 1.0 - (diff / avg));
   }
 
   @Override
@@ -194,11 +189,23 @@ public final class FloatApproximatelyEqual extends TwoFloat implements EqualityC
           debug,
           "add_modified (" + v1 + ", " + v2 + ",  ppt.num_values = " + ppt.num_values() + ")");
     }
-    if ((logOn() || debug.isLoggable(Level.FINE))
-        && check_modified(v1, v2, count) == InvariantStatus.FALSIFIED)
-      log(debug, "destroy in add_modified (" + v1 + ", " + v2 + ",  " + count + ")");
 
-    return check_modified(v1, v2, count);
+    num_samples_seen += count;
+    if (check_modified(v1, v2, count) == InvariantStatus.FALSIFIED) {
+      num_violations_seen += count;
+      if (logOn() || debug.isLoggable(Level.FINE)) {
+        log(debug, "violation in add_modified (" + v1 + ", " + v2 + ",  " + count + ")");
+      }
+    }
+
+    // Only falsify once we have enough evidence
+    if (num_samples_seen >= MIN_SAMPLES) {
+      double violation_rate = (double) num_violations_seen / num_samples_seen;
+      if (violation_rate > MAX_VIOLATION_RATE) {
+        return InvariantStatus.FALSIFIED;
+      }
+    }
+    return InvariantStatus.NO_CHANGE;
   }
 
   // This is very tricky, because whether two variables are equal should
@@ -225,7 +232,7 @@ public final class FloatApproximatelyEqual extends TwoFloat implements EqualityC
   }
 
   @Override
-  public boolean enoughSamples(@GuardSatisfied FloatEqual this) {
+  public boolean enoughSamples(@GuardSatisfied FloatApproximatelyEqual this) {
     return ppt.num_samples() > 0;
   }
 
@@ -276,6 +283,20 @@ public final class FloatApproximatelyEqual extends TwoFloat implements EqualityC
     return super.add(v1, v2, mod_index, count);
   }
 
+  @Override
+  public @Nullable FloatApproximatelyEqual merge(List<Invariant> invs, PptSlice parent_ppt) {
+    FloatApproximatelyEqual first = (FloatApproximatelyEqual) invs.get(0);
+    FloatApproximatelyEqual result = (FloatApproximatelyEqual) first.clone();
+    result.ppt = parent_ppt;
+    for (int i = 1; i < invs.size(); i++) {
+      FloatApproximatelyEqual child = (FloatApproximatelyEqual) invs.get(i);
+      result.num_samples_seen += child.num_samples_seen;
+      result.num_violations_seen += child.num_violations_seen;
+    }
+    result.log("Merged '%s' from %s child invariants", result.format(), invs.size());
+    return result;
+  }
+
   @Pure
   @Override
   public boolean isSameFormula(Invariant other) {
@@ -290,7 +311,10 @@ public final class FloatApproximatelyEqual extends TwoFloat implements EqualityC
 
       if ((other instanceof FloatLessThan)
           || (other instanceof FloatGreaterThan)
-          || (other instanceof FloatNonEqual)) {
+          || (other instanceof FloatNonEqual)
+          || (other instanceof FloatLessEqual)
+          || (other instanceof FloatGreaterEqual)
+          || (other instanceof FloatEqual)) {
         return true;
       }
 

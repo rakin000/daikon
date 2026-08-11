@@ -29,7 +29,6 @@ import daikon.inv.binary.twoScalar.FloatEqual;
 import daikon.inv.binary.twoScalar.FloatGreaterEqual;
 import daikon.inv.binary.twoScalar.FloatGreaterThan;
 import daikon.inv.binary.twoScalar.FloatLessEqual;
-import daikon.inv.binary.twoScalar.CorrelationInvariant;
 import daikon.inv.binary.twoScalar.FloatLessThan;
 import daikon.inv.binary.twoScalar.FloatNonEqual;
 import daikon.inv.binary.twoScalar.IntEqual;
@@ -42,6 +41,8 @@ import daikon.inv.binary.twoScalar.LinearBinary;
 import daikon.inv.binary.twoScalar.LinearBinaryFloat;
 import daikon.inv.binary.twoScalar.NumericFloat;
 import daikon.inv.binary.twoScalar.NumericInt;
+import daikon.inv.binary.twoScalar.FloatApproximatelyEqual; 
+import daikon.inv.binary.twoScalar.FloatStatisticallyCorrelated; 
 import daikon.inv.binary.twoSequence.PairwiseFloatEqual;
 import daikon.inv.binary.twoSequence.PairwiseFloatGreaterEqual;
 import daikon.inv.binary.twoSequence.PairwiseFloatGreaterThan;
@@ -1639,7 +1640,7 @@ public final class Daikon {
       proto_invs.add(LinearBinaryFloat.get_proto());
 
       // Statistical correlation (CorrelationInvariant.java)
-      proto_invs.add(CorrelationInvariant.get_proto());
+      proto_invs.add(FloatStatisticallyCorrelated.get_proto());
 
       // Numeric invariants (from Numeric.java.jpp)
       proto_invs.addAll(NumericInt.get_proto_all());
