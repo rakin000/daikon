@@ -530,3 +530,6 @@ scripts/dockerdir/
 java/pmd-output.txt
 java/pmd.cache
 build/*
+
+
+*.DS_Store
