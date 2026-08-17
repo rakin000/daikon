@@ -32,6 +32,7 @@ java/java_files.txt
 java/javadoc-files.txt
 # Javadoc
 java/api
+java/lib/.gradle
 
 # Eclipse files
 java/bin
@@ -533,3 +534,4 @@ build/*
 
 
 *.DS_Store
+*.jar
