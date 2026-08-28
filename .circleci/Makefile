@@ -1,21 +1,22 @@
-.PHONY: all default clean
+PLUME_SCRIPTS ?= ../.utils/plume-scripts
+
+.PHONY: all test clean default
 all default: config.yml validate
 # TODO: all default: config.yml config-daily.yml validate
 
-%: %.m4 defs.m4 ../.azure/jobs.m4
+%: %.m4 defs.m4 ../.azure/defs-common.m4 ../.azure/jobs.m4
 	@chmod -f +w $@ || true
 	m4 $< > $@
-# Squeeze multiple blank lines into one.
-	cat -s $@ > $@.tmp
-# Remove leading blank lines.
-	sed '/[^[:blank:]]/,$$!d' $@.tmp > $@
-# Remove trailing blank lines.
-	sed -e :a -e '/^\s*$$/{$$d;N;ba' -e '}' $@ > $@.tmp
-	mv -f $@.tmp $@
+	${PLUME_SCRIPTS}/squeeze-blank-lines $@
 	@chmod -w $@
 
 validate: config.yml
 	cd .. && circleci config validate
 
+${PLUME_SCRIPTS}:
+	mkdir -p $$(dirname $@)
+	git clone --depth=1 -q https://github.com/plume-lib/plume-scripts.git $@
+
 clean:
 	rm -f config.yml
+test:

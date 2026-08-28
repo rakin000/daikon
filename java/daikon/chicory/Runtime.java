@@ -41,6 +41,7 @@ import org.checkerframework.checker.signature.qual.BinaryName;
 import org.checkerframework.checker.signature.qual.ClassGetName;
 import org.checkerframework.checker.signature.qual.FieldDescriptor;
 import org.checkerframework.checker.signature.qual.FqBinaryName;
+import org.checkerframework.checker.signature.qual.InternalForm;
 import org.checkerframework.dataflow.qual.SideEffectFree;
 
 /**
@@ -87,7 +88,7 @@ public final class Runtime {
   // Setups that control what information is written
   //
 
-  /** Depth to wich to examine structure components. */
+  /** Depth to which to examine structure components. */
   static int nesting_depth = 2;
 
   //
@@ -373,7 +374,7 @@ public final class Runtime {
         }
       }
 
-      // Write out the infromation for this method
+      // Write out the information for this method
       synchronized (SharedData.methods) {
         mi = SharedData.methods.get(mi_index);
       }
@@ -535,12 +536,12 @@ public final class Runtime {
       // System.out.println("Attempting to connect to Daikon on port --- " + port);
       daikonSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(), port), 5000);
     } catch (UnknownHostException e) {
-      System.out.println(
+      System.err.println(
           "UnknownHostException connecting to Daikon : " + e.getMessage() + ". Exiting");
       System.exit(1);
       throw new Error("Unreachable control flow");
     } catch (IOException e) {
-      System.out.println(
+      System.err.println(
           "IOException, could not connect to Daikon : " + e.getMessage() + ". Exiting");
       System.exit(1);
       throw new Error("Unreachable control flow");
@@ -551,7 +552,7 @@ public final class Runtime {
           new PrintWriter(
               new BufferedWriter(new OutputStreamWriter(daikonSocket.getOutputStream(), UTF_8)));
     } catch (IOException e) {
-      System.out.println("IOException connecting to Daikon : " + e.getMessage() + ". Exiting");
+      System.err.println("IOException connecting to Daikon : " + e.getMessage() + ". Exiting");
       System.exit(1);
     }
 
@@ -729,7 +730,7 @@ public final class Runtime {
   // Used to distinguish wrappers created by user code
   // from wrappers created by Chicory.
 
-  /** A wrapper for a pritive class. */
+  /** A wrapper for a primitive class. */
   public static interface PrimitiveWrapper {
     // returns corresponding java.lang wrapper
     public Object getJavaWrapper();
@@ -1082,7 +1083,10 @@ public final class Runtime {
   // From class SignaturesUtil
   //
 
-  /** A map from field descriptor (sach as "I") to Java primitive type (such as "int"). */
+  // Eventually the code should use the library rather than copying its code.
+  // (As of 2026-01-10, I'm having trouble with the shadowJar plugin.)
+
+  /** A map from field descriptor (such as "I") to Java primitive type (such as "int"). */
   private static HashMap<String, String> fieldDescriptorToPrimitive = new HashMap<>(8);
 
   static {
@@ -1169,6 +1173,26 @@ public final class Runtime {
       }
       return result;
     }
+  }
+
+  /**
+   * Given a class name in internal form, return it as a binary name.
+   *
+   * @param internalForm a class name in internal form
+   * @return the class name as a binary name
+   */
+  public static @BinaryName String internalFormToBinaryName(@InternalForm String internalForm) {
+    return internalForm.replace('/', '.');
+  }
+
+  /**
+   * Given a class name in binary name form, return it in internal form.
+   *
+   * @param binaryName a class name in binary name form
+   * @return the class name in internal form
+   */
+  public static @InternalForm String binaryNameToInternalForm(@BinaryName String binaryName) {
+    return binaryName.replace('.', '/');
   }
 
   // ///////////////////////////////////////////////////////////////////////////

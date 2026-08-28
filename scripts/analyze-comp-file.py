@@ -43,7 +43,7 @@ for line in all_lines:
     # (Ignore blank lines) ... we hit a space-delimited list of
     # comparable variables
     elif line:
-        # Size of comparability set for that line (mostly gonna be 1)
+        # Size of comparability set for that line (usually 1)
         cur_ppt_set_sizes.append(len(line.split()))
 
 
@@ -58,7 +58,11 @@ total_vars = 0
 
 total_square_vars_no_comp = 0
 
+<<<<<<< HEAD
 for ppt, comp_set_sizes_at_ppt in ppt_info_dict.items():  # ruff: ignore[unused-loop-control-variable, incorrect-dict-iterator]
+=======
+for ppt, comp_set_sizes_at_ppt in ppt_info_dict.items():  # ruff:ignore[unused-loop-control-variable, incorrect-dict-iterator]
+>>>>>>> upstream_master
     total_vars_at_ppt = sum(comp_set_sizes_at_ppt)
     square_vars_at_ppt = sum((i * i) for i in comp_set_sizes_at_ppt)
 

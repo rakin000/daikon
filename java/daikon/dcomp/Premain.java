@@ -200,14 +200,12 @@ public class Premain {
     Thread shutdown_thread = new ShutdownThread();
     java.lang.Runtime.getRuntime().addShutdownHook(shutdown_thread);
 
-    // UNDONE: turn on Instrument24
-    String instrumenter = "daikon.dcomp.Instrument";
-    // String instrumenter;
-    // if (daikon.chicory.Runtime.isJava24orLater()) {
-    //   instrumenter = "daikon.dcomp.Instrument24";
-    // } else {
-    //   instrumenter = "daikon.dcomp.Instrument";
-    // }
+    String instrumenter;
+    if (daikon.chicory.Runtime.isJava24orLater()) {
+      instrumenter = "daikon.dcomp.Instrument24";
+    } else {
+      instrumenter = "daikon.dcomp.Instrument";
+    }
 
     // Setup the transformer
     ClassFileTransformer transformer;
@@ -245,7 +243,7 @@ public class Premain {
     inst.addTransformer(transformer, true);
 
     // See the "General Java Runtime instrumentation strategy" comments in DCInstrument.java
-    // for an explaination of how we deal with instrumenting the JDK 11 runtime.
+    // for an explanation of how we deal with instrumenting the JDK 11 runtime.
     //
     // At this point in DynComp start up, we use java.lang.instrument.redefineClasses to replace the
     // dummy java.lang.DCRuntime with a version where each method calls the corresponding method in
