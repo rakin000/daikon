@@ -32,6 +32,7 @@ java/java_files.txt
 java/javadoc-files.txt
 # Javadoc
 java/api
+java/lib/.gradle
 
 # Eclipse files
 java/bin
@@ -528,3 +529,8 @@ scripts/dockerdir/
 # PMD
 java/pmd-output.txt
 java/pmd.cache
+build/*
+
+
+*.DS_Store
+*.jar
