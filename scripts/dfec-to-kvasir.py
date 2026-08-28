@@ -47,13 +47,13 @@ with Path(sys.argv[1]).open() as dfec_f:
 with Path(sys.argv[2]).open() as kvasir_f:
     kvasir_all_lines = [line.strip() for line in kvasir_f]
 
-output_lackwit_decls_f = Path(sys.argv[3]).open("w")  # noqa: SIM115
-output_dyn_comp_decls_f = Path(sys.argv[4]).open("w")  # noqa: SIM115
+output_lackwit_decls_f = Path(sys.argv[3]).open("w")  # ruff:ignore[open-file-with-context-handler]
+output_dyn_comp_decls_f = Path(sys.argv[4]).open("w")  # ruff:ignore[open-file-with-context-handler]
 
-output_dec_types_decls_f = Path(sys.argv[5]).open("w")  # noqa: SIM115
-output_no_comp_decls_f = Path(sys.argv[6]).open("w")  # noqa: SIM115
+output_dec_types_decls_f = Path(sys.argv[5]).open("w")  # ruff:ignore[open-file-with-context-handler]
+output_no_comp_decls_f = Path(sys.argv[6]).open("w")  # ruff:ignore[open-file-with-context-handler]
 
-output_vars_f = Path(sys.argv[7]).open("w")  # noqa: SIM115
+output_vars_f = Path(sys.argv[7]).open("w")  # ruff:ignore[open-file-with-context-handler]
 
 
 DfecGlobalRE = re.compile(r"^::")
@@ -119,7 +119,7 @@ def strip_comp_number(comp_num: str) -> str:
         comp_num: a comparability, possibly in array form
 
     Returns:
-        the comparibility without the array part
+        the comparability without the array part
     """
     if "[" in comp_num:
         return comp_num[: comp_num.find("[")]
@@ -240,7 +240,8 @@ my_state = DeclState.Uninit
 # values are comparability numbers
 dfec_ppt_map: dict[tuple[str, str], dict[str, str]] = {}
 
-cur_var_map: dict[str, str] = {}  # The current variable map, which is a value in dfec_ppt_map.
+# The current variable map, which is a value in dfec_ppt_map.
+cur_var_map: dict[str, str] = {}
 cur_var_name = "DUMMY VAR NAME"
 
 for line in dfec_all_lines:
@@ -274,7 +275,7 @@ for line in dfec_all_lines:
         # e.g. '217[337]' should become '217'
         cur_var_map[cur_var_name] = strip_comp_number(line)
 
-        # Assume we are gonna read another variable.
+        # Assume we are going to read another variable.
         # When we actually read the subsequent line,
         # we'll branch according to whether it's a real
         # variable or another thing
@@ -333,7 +334,7 @@ for line in kvasir_all_lines:
     elif my_state == DeclState.CompNum:
         cur_var_list[-1].append(line)
 
-        # Assume we are gonna read another variable.
+        # Assume we are going to read another variable.
         # When we actually read the subsequent line,
         # we'll branch according to whether it's a real
         # variable or another thing

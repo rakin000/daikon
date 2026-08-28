@@ -2,7 +2,7 @@ HIERDIR = ../tools/hierarchical
 KMDIR = ../tools/kmeans
 
 # These are executables and/or downloaded from the Internet.
-all: difftbl cluster clgroup kmeans trace-untruncate-fast checkargs.pm style-fix
+all: difftbl cluster clgroup kmeans trace-untruncate-fast checkargs.pm
 .PHONY: all clean tags
 
 clean:
@@ -47,3 +47,6 @@ ${KMDIR}/kmeans:
 
 checkargs.pm:
 	wget https://raw.githubusercontent.com/plume-lib/html-tools/master/checkargs.pm
+
+.PHONY: test
+test: all
