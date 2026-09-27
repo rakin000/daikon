@@ -27,6 +27,8 @@ java/dcomp_premain.jar
 java/*.class
 java/**/*.class
 java/lib/tmp
+# Directory generated when building daikon-plumelib.jar
+java/lib/.gradle
 # Temporary file used during compilation
 java/java_files.txt
 java/javadoc-files.txt
@@ -534,3 +536,5 @@ build/*
 
 *.DS_Store
 *.jar
+
+.claude
