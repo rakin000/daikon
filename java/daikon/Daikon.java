@@ -109,8 +109,10 @@ import daikon.inv.unary.scalar.NonZero;
 import daikon.inv.unary.scalar.NonZeroFloat;
 import daikon.inv.unary.scalar.OneOfFloat;
 import daikon.inv.unary.scalar.OneOfScalar;
+import daikon.inv.unary.scalar.OutOfDistributionFloat;
 import daikon.inv.unary.scalar.RangeFloat;
 import daikon.inv.unary.scalar.RangeInt;
+import daikon.inv.unary.scalar.Trend;
 import daikon.inv.unary.scalar.UpperBound;
 import daikon.inv.unary.scalar.UpperBoundFloat;
 import daikon.inv.unary.sequence.CommonFloatSequence;
@@ -1515,36 +1517,42 @@ public final class Daikon {
     // Unary scalar invariants
     {
       // OneOf (OneOf.java.jpp)
-      proto_invs.add(OneOfScalar.get_proto());
-      proto_invs.add(OneOfFloat.get_proto());
-      proto_invs.add(OneOfString.get_proto());
+      // proto_invs.add(OneOfScalar.get_proto());
+     // proto_invs.add(OneOfFloat.get_proto());
+     // proto_invs.add(OneOfString.get_proto());
 
       // NonZero (NonZero.java.jpp)
       proto_invs.add(NonZero.get_proto());
       proto_invs.add(NonZeroFloat.get_proto());
 
-      proto_invs.add(IsPointer.get_proto());
+      //proto_invs.add(IsPointer.get_proto());
+
+      // Trend (Trend.java): AlwaysNondecreasing / AlwaysNonincreasing / NeverChanging
+      proto_invs.add(Trend.get_proto());
 
       // Lower and Upper bound (Bound.java.jpp)
-      proto_invs.add(LowerBound.get_proto());
-      proto_invs.add(LowerBoundFloat.get_proto());
+      //proto_invs.add(LowerBound.get_proto());
+      //proto_invs.add(LowerBoundFloat.get_proto());
       proto_invs.add(UpperBound.get_proto());
       proto_invs.add(UpperBoundFloat.get_proto());
 
       // Modulus and NonModulus (Modulus.java and NonModulus.java)
-      proto_invs.add(Modulus.get_proto());
-      proto_invs.add(NonModulus.get_proto());
+     // proto_invs.add(Modulus.get_proto());
+     // proto_invs.add(NonModulus.get_proto());
 
       // Range invariant (Range.java.jpp)
       proto_invs.addAll(RangeInt.get_proto_all());
       proto_invs.addAll(RangeFloat.get_proto_all());
 
+      // Learned Gaussian model + runtime out-of-distribution detector (OutOfDistributionFloat.java)
+      proto_invs.add(OutOfDistributionFloat.get_proto());
+
       // Printable String
-      proto_invs.add(PrintableString.get_proto());
+      //proto_invs.add(PrintableString.get_proto());
 
       // Complete One Of
-      proto_invs.add(CompleteOneOfString.get_proto());
-      proto_invs.add(CompleteOneOfScalar.get_proto());
+      //proto_invs.add(CompleteOneOfString.get_proto());
+      //proto_invs.add(CompleteOneOfScalar.get_proto());
 
       // Positive (x > 0) (Positive.java).  Positive is a sample invariant
       // that is only included as an example.
@@ -1554,110 +1562,111 @@ public final class Daikon {
     // Unary sequence invariants
     {
       // OneOf (OneOf.java.jpp)
-      proto_invs.add(OneOfSequence.get_proto());
-      proto_invs.add(OneOfFloatSequence.get_proto());
-      proto_invs.add(OneOfStringSequence.get_proto());
-      proto_invs.add(EltOneOf.get_proto());
-      proto_invs.add(EltOneOfFloat.get_proto());
-      proto_invs.add(EltOneOfString.get_proto());
+     // proto_invs.add(OneOfSequence.get_proto());
+     // proto_invs.add(OneOfFloatSequence.get_proto());
+     // proto_invs.add(OneOfStringSequence.get_proto());
+     // proto_invs.add(EltOneOf.get_proto());
+     // proto_invs.add(EltOneOfFloat.get_proto());
+     // proto_invs.add(EltOneOfString.get_proto());
 
       // Range invariant (Range.java.jpp)
-      proto_invs.addAll(EltRangeInt.get_proto_all());
-      proto_invs.addAll(EltRangeFloat.get_proto_all());
+      //proto_invs.addAll(EltRangeInt.get_proto_all());
+      //proto_invs.addAll(EltRangeFloat.get_proto_all());
 
       // Sequence Index Comparisons (SeqIndexComparison.java.jpp)
-      proto_invs.add(SeqIndexIntEqual.get_proto());
-      proto_invs.add(SeqIndexIntNonEqual.get_proto());
-      proto_invs.add(SeqIndexIntGreaterEqual.get_proto());
-      proto_invs.add(SeqIndexIntGreaterThan.get_proto());
-      proto_invs.add(SeqIndexIntLessEqual.get_proto());
-      proto_invs.add(SeqIndexIntLessThan.get_proto());
-      proto_invs.add(SeqIndexFloatEqual.get_proto());
-      proto_invs.add(SeqIndexFloatNonEqual.get_proto());
-      proto_invs.add(SeqIndexFloatGreaterEqual.get_proto());
-      proto_invs.add(SeqIndexFloatGreaterThan.get_proto());
-      proto_invs.add(SeqIndexFloatLessEqual.get_proto());
-      proto_invs.add(SeqIndexFloatLessThan.get_proto());
+      //proto_invs.add(SeqIndexIntEqual.get_proto());
+      //proto_invs.add(SeqIndexIntNonEqual.get_proto());
+      //proto_invs.add(SeqIndexIntGreaterEqual.get_proto());
+      //proto_invs.add(SeqIndexIntGreaterThan.get_proto());
+      //proto_invs.add(SeqIndexIntLessEqual.get_proto());
+      //proto_invs.add(SeqIndexIntLessThan.get_proto());
+      //proto_invs.add(SeqIndexFloatEqual.get_proto());
+      //proto_invs.add(SeqIndexFloatNonEqual.get_proto());
+      //proto_invs.add(SeqIndexFloatGreaterEqual.get_proto());
+      //proto_invs.add(SeqIndexFloatGreaterThan.get_proto());
+      //proto_invs.add(SeqIndexFloatLessEqual.get_proto());
+      //proto_invs.add(SeqIndexFloatLessThan.get_proto());
 
       // foreach i compare a[i] to a[i+1] (EltwiseIntComparisons.java.jpp)
-      proto_invs.add(EltwiseIntEqual.get_proto());
-      proto_invs.add(EltwiseIntLessEqual.get_proto());
-      proto_invs.add(EltwiseIntGreaterEqual.get_proto());
-      proto_invs.add(EltwiseIntLessThan.get_proto());
-      proto_invs.add(EltwiseIntGreaterThan.get_proto());
-      proto_invs.add(EltwiseFloatEqual.get_proto());
-      proto_invs.add(EltwiseFloatLessEqual.get_proto());
-      proto_invs.add(EltwiseFloatGreaterEqual.get_proto());
-      proto_invs.add(EltwiseFloatLessThan.get_proto());
-      proto_invs.add(EltwiseFloatGreaterThan.get_proto());
+      //proto_invs.add(EltwiseIntEqual.get_proto());
+      //proto_invs.add(EltwiseIntLessEqual.get_proto());
+      //proto_invs.add(EltwiseIntGreaterEqual.get_proto());
+      //proto_invs.add(EltwiseIntLessThan.get_proto());
+      //proto_invs.add(EltwiseIntGreaterThan.get_proto());
+      //proto_invs.add(EltwiseFloatEqual.get_proto());
+      //proto_invs.add(EltwiseFloatLessEqual.get_proto());
+      //proto_invs.add(EltwiseFloatGreaterEqual.get_proto());
+      //proto_invs.add(EltwiseFloatLessThan.get_proto());
+      //proto_invs.add(EltwiseFloatGreaterThan.get_proto());
 
       // EltNonZero (EltNonZero.java.jpp)
-      proto_invs.add(EltNonZero.get_proto());
-      proto_invs.add(EltNonZeroFloat.get_proto());
+      //proto_invs.add(EltNonZero.get_proto());
+      //proto_invs.add(EltNonZeroFloat.get_proto());
 
       // No Duplicates (NoDuplicates.java.jpp)
-      proto_invs.add(NoDuplicates.get_proto());
-      proto_invs.add(NoDuplicatesFloat.get_proto());
+      //proto_invs.add(NoDuplicates.get_proto());
+      //proto_invs.add(NoDuplicatesFloat.get_proto());
 
       // Element bounds (Bound.java.jpp)
-      proto_invs.add(EltLowerBound.get_proto());
-      proto_invs.add(EltUpperBound.get_proto());
-      proto_invs.add(EltLowerBoundFloat.get_proto());
-      proto_invs.add(EltUpperBoundFloat.get_proto());
+      //proto_invs.add(EltLowerBound.get_proto());
+      //proto_invs.add(EltUpperBound.get_proto());
+      //proto_invs.add(EltLowerBoundFloat.get_proto());
+      //proto_invs.add(EltUpperBoundFloat.get_proto());
 
       // CommonSequence (CommonSequence.java.jpp)
-      proto_invs.add(CommonSequence.get_proto());
-      proto_invs.add(CommonFloatSequence.get_proto());
+      //proto_invs.add(CommonSequence.get_proto());
+      //proto_invs.add(CommonFloatSequence.get_proto());
 
       // CommonStringSequence (CommonStringSubsequence.java)
-      proto_invs.add(CommonStringSequence.get_proto());
+      //proto_invs.add(CommonStringSequence.get_proto());
     }
 
     // Binary scalar-scalar invariants
     {
       // Int, Float, String comparisons (from IntComparisons.java.jpp)
-      proto_invs.add(IntEqual.get_proto());
-      proto_invs.add(IntNonEqual.get_proto());
-      proto_invs.add(IntLessThan.get_proto());
-      proto_invs.add(IntGreaterThan.get_proto());
-      proto_invs.add(IntLessEqual.get_proto());
-      proto_invs.add(IntGreaterEqual.get_proto());
-      proto_invs.add(FloatEqual.get_proto());
-      proto_invs.add(FloatNonEqual.get_proto());
-      proto_invs.add(FloatLessThan.get_proto());
-      proto_invs.add(FloatGreaterThan.get_proto());
-      proto_invs.add(FloatLessEqual.get_proto());
-      proto_invs.add(FloatGreaterEqual.get_proto());
-      proto_invs.add(StringEqual.get_proto());
-      proto_invs.add(StringNonEqual.get_proto());
-      proto_invs.add(StringLessThan.get_proto());
-      proto_invs.add(StringGreaterThan.get_proto());
-      proto_invs.add(StringLessEqual.get_proto());
-      proto_invs.add(StringGreaterEqual.get_proto());
+      //proto_invs.add(IntEqual.get_proto());
+      // proto_invs.add(IntNonEqual.get_proto());
+      //proto_invs.add(IntLessThan.get_proto());
+      //proto_invs.add(IntGreaterThan.get_proto());
+      //proto_invs.add(IntLessEqual.get_proto());
+      //proto_invs.add(IntGreaterEqual.get_proto());
+      //proto_invs.add(FloatEqual.get_proto());
+      //proto_invs.add(FloatNonEqual.get_proto());
+      //proto_invs.add(FloatLessThan.get_proto());
+      //proto_invs.add(FloatGreaterThan.get_proto());
+      //proto_invs.add(FloatLessEqual.get_proto());
+      //proto_invs.add(FloatGreaterEqual.get_proto());
+      //proto_invs.add(StringEqual.get_proto());
+      //proto_invs.add(StringNonEqual.get_proto());
+      //proto_invs.add(StringLessThan.get_proto());
+      //proto_invs.add(StringGreaterThan.get_proto());
+      //proto_invs.add(StringLessEqual.get_proto());
+      //proto_invs.add(StringGreaterEqual.get_proto());
 
       // LinearBinary over integer/float (from LinearBinary.java.jpp)
-      proto_invs.add(LinearBinary.get_proto());
-      proto_invs.add(LinearBinaryFloat.get_proto());
+      //proto_invs.add(LinearBinary.get_proto());
+      //proto_invs.add(LinearBinaryFloat.get_proto());
 
       // Statistical correlation (CorrelationInvariant.java)
       proto_invs.add(FloatStatisticallyCorrelated.get_proto());
 
       // Numeric invariants (from Numeric.java.jpp)
-      proto_invs.addAll(NumericInt.get_proto_all());
+      //proto_invs.addAll(NumericInt.get_proto_all());
       proto_invs.addAll(NumericFloat.get_proto_all());
 
       // Standard binary string invariants
-      proto_invs.addAll(StdString.get_proto_all());
+      //proto_invs.addAll(StdString.get_proto_all());
     }
 
     // Binary sequence-sequence invariants
+    /*
     {
       // Numeric invariants (from Numeric.java.jpp)
-      proto_invs.addAll(PairwiseNumericInt.get_proto_all());
-      proto_invs.addAll(PairwiseNumericFloat.get_proto_all());
+      //proto_invs.addAll(PairwiseNumericInt.get_proto_all());
+      //proto_invs.addAll(PairwiseNumericFloat.get_proto_all());
 
       // Pairwise string invariants (also from Numeric.java.jpp)
-      proto_invs.addAll(PairwiseString.get_proto_all());
+      //proto_invs.addAll(PairwiseString.get_proto_all());
 
       // Lexical sequence comparisons (from SeqComparison.java.jpp)
       proto_invs.add(SeqSeqIntEqual.get_proto());
@@ -1713,8 +1722,10 @@ public final class Daikon {
       proto_invs.add(SuperSequence.get_proto());
       proto_invs.add(SuperSequenceFloat.get_proto());
     }
+    */ 
 
     // Binary sequence-scalar invariants
+    /*
     {
       // Comparison of scalar to each array element (SeqIntComparison.java.jpp)
       proto_invs.add(SeqIntEqual.get_proto());
@@ -1733,16 +1744,17 @@ public final class Daikon {
       proto_invs.add(MemberFloat.get_proto());
       proto_invs.add(MemberString.get_proto());
     }
+    */
 
     // Ternary invariants
     {
       // FunctionBinary (FunctionBinary.java.jpp)
-      proto_invs.addAll(FunctionBinary.get_proto_all());
-      proto_invs.addAll(FunctionBinaryFloat.get_proto_all());
+//      proto_invs.addAll(FunctionBinary.get_proto_all());
+//      proto_invs.addAll(FunctionBinaryFloat.get_proto_all());
 
       // LinearTernary (LinearTernary.java.jpp)
-      proto_invs.add(LinearTernary.get_proto());
-      proto_invs.add(LinearTernaryFloat.get_proto());
+//      proto_invs.add(LinearTernary.get_proto());
+//      proto_invs.add(LinearTernaryFloat.get_proto());
     }
 
     // User-defined invariants
